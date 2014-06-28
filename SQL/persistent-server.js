@@ -1,5 +1,10 @@
+var http = require('http');
+var request;
 
-/* You already know how to create an http server from the previous
- * assignment; you can re-use most of that code here. */
+var port = 2001;
+var ip = '127.0.0.1';
 
+var server = http.createSever(request);
+console.log("IT'S ALIVE");
 
+server.listen(ip, port);

@@ -3,6 +3,7 @@
 
 var mysql = require('mysql');
 var request = require("request"); // You might need to npm install the request module!
+var _ = require('underscore');
 var expect = require('../../node_modules/chai/chai').expect;
 
 describe("Persistent Node Chat Server", function() {
@@ -11,18 +12,20 @@ describe("Persistent Node Chat Server", function() {
   beforeEach(function(done) {
     dbConnection = mysql.createConnection({
     /* TODO: Fill this out with your mysql username */
-      user: "",
+      // user: "",
     /* and password. */
-      password: "",
+      // password: "",
       database: "chat"
     });
     dbConnection.connect();
 
-    var tablename = ""; // TODO: fill this out
+    var tables = ['Users', 'Rooms', 'Relationships', 'Messages']; // TODO: fill this out
 
     /* Empty the db table before each test so that multiple tests
      * (or repeated runs of the tests) won't screw each other up: */
-    dbConnection.query("DELETE FROM " + tablename, done);
+    _.each(tables, function(table) {
+      dbConnection.query("DELETE FROM " + table, done);
+    });
   });
 
   afterEach(function() {
