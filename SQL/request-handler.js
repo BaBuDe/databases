@@ -1,5 +1,6 @@
-var db = require('./db.js');
+var db = require('./db.js').dbConnection;
 var _ = require('underscore');
+var qs = require('querystring');
 
 
 exports.handler = function(request, response) {
@@ -12,32 +13,49 @@ exports.handler = function(request, response) {
   if(request.method === 'GET' && request.url.split('/')[1] === 'classes' ){
     statusCode = 200;
   }else if(request.method === 'POST'){
+
     statusCode = 201;
+    // console.log(request);
     var body = '';
     request.on('data', function(data){
+      console.log("hearing data: " + data);
       body += data;
     });
 
     //add (JSON.parse(body)) to mySQL server
     //we will need to use db.query(INSERT) to send it over
     request.on('end', function(){
+      console.log('The body is ' + body);
       var message = JSON.parse(body);
+      console.log('JSON PARSED:', message);
       var content = message.text;
       var username = message.username;
       var roomname = message.roomname || 'main';
       var timestamp = 'YEAR ONE';
       var userID;
       var roomID;
-      db.query('insert into Rooms set ?', {Roomname: roomname}, function (err, result) {
-        if (err) throw error;
-        roomID = result.insertID;
+      db.query('INSERT INTO Rooms SET ?', {Roomname: roomname}, function (err, result) {
 
-        db.query('insert into Users set ?', {Username: username}, function (err, result) {
-          if (err) throw error;
-          userID = result.insertID;
+        if (err) {
+          throw err;
+        }
+        roomID = result.insertId;
 
-          db.query('insert into Messages set ?', {Content: content, Timestamp: timestamp}, function (err, result) {
-            if (err) throw error;
+        db.query('INSERT INTO Users SET ?', {Username: username}, function (err, result) {
+          if (err) {
+            throw err;
+          }
+          userID = result.insertId;
+          console.log('insertId:', userID);
+
+          // db.query('select * from Users', function(err, rows){
+          //   console.log('select user:', rows);
+          // });
+
+          db.query('INSERT INTO Messages SET ?', {Content: content, id_Users: userID, id_Rooms: roomID}, function (err, result) {
+            if (err) {
+              throw err;
+            }
           });
         });
       });

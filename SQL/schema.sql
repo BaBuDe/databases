@@ -23,7 +23,6 @@ CREATE TABLE `Messages` (
   `Content` VARCHAR(140) NOT NULL,
   `id_Users` INTEGER NOT NULL,
   `id_Rooms` INTEGER NOT NULL,
-  `Timestamp` TIMESTAMP NOT NULL,
   PRIMARY KEY (`id`)
 );
 

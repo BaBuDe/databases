@@ -1,10 +1,10 @@
 var http = require('http');
-var handler = require('./request-handler.js');
+var handler = require('./request-handler.js').handler;
 
-var port = 2001;
+var port = 3000;
 var ip = '127.0.0.1';
 
-var server = http.createSever(handler);
+var server = http.createServer(handler);
 console.log("IT'S ALIVE");
 
-server.listen(ip, port);
+server.listen(port, ip);
